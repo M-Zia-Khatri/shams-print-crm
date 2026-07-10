@@ -62,6 +62,7 @@
                         <x-slot name="icon">
                             <x-jam-write class="text-primary w-6 h-6" />
                         </x-slot>
+                        <a href="{{ route('item-entries.index') }}" class="btn btn-primary btn-sm text-primary-content rounded-lg">Open</a>
                     </x-dashboard-card>
 
                     <!-- Employees-->

@@ -81,9 +81,9 @@
 
                 <!-- Nav Links for Desktop (Visual placebo) -->
                 <nav class="hidden md:flex items-center gap-1.5 mr-4">
-                    <a href="#" class="btn btn-ghost btn-sm rounded-lg text-primary">Dashboard</a>
-                    <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
+                    <a href="{{ route('home') }}" class="btn btn-ghost btn-sm rounded-lg {{ request()->routeIs('home') ? 'text-primary' : 'text-base-content/70 hover:text-base-content' }}">Dashboard</a>
+                    <a href="{{ route('item-entries.index') }}"
+                        class="btn btn-ghost btn-sm rounded-lg {{ request()->routeIs('item-entries.*') ? 'text-primary' : 'text-base-content/70 hover:text-base-content' }}">Entry</a>
                     <a href="#"
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Employees</a>
                     <a href="#"
