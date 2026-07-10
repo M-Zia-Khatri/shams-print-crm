@@ -1,1 +1,1 @@
-//
+import './item-entries';
