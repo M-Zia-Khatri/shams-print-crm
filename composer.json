@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "blade-ui-kit/blade-icons": "^1.10",
-        "cloudinary-labs/cloudinary-laravel": "^3.0",
+        "cloudinary/cloudinary_php": "^2.0",
         "codeat3/blade-clarity-icons": "^1.11",
         "codeat3/blade-game-icons": "^1.6",
         "codeat3/blade-jam-icons": "^1.8",

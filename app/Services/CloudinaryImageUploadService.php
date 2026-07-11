@@ -2,49 +2,75 @@
 
 namespace App\Services;
 
+use App\Exceptions\ImageUploadException;
 use App\Services\Contracts\ImageUploadServiceInterface;
+use Cloudinary\Cloudinary;
 use Illuminate\Http\UploadedFile;
-use RuntimeException;
+use Throwable;
 
 class CloudinaryImageUploadService implements ImageUploadServiceInterface
 {
     /**
-     * @return array{url: string, public_id: string}
+     * @return array{url: string, public_id: string, secure_url: string, width: int|null, height: int|null, bytes: int|null, format: string|null, resource_type: string|null}
      */
     public function upload(UploadedFile $file): array
     {
-        $this->ensureCloudinaryIsInstalled();
+        try {
+            $response = $this->cloudinary()->uploadApi()->upload($file->getRealPath(), [
+                'folder' => 'item_entries',
+                'resource_type' => 'image',
+            ]);
+        } catch (ImageUploadException $exception) {
+            throw $exception;
+        } catch (Throwable $exception) {
+            throw ImageUploadException::uploadFailed($exception);
+        }
 
-        $response = app('cloudinary')->uploadApi()->upload($file->getRealPath(), [
-            'folder' => 'item_entries',
-            'resource_type' => 'image',
-        ]);
+        $secureUrl = (string) ($response['secure_url'] ?? $response['url'] ?? '');
 
         return [
-            'url' => (string) ($response['secure_url'] ?? $response['url'] ?? ''),
+            'url' => $secureUrl,
             'public_id' => (string) ($response['public_id'] ?? ''),
+            'secure_url' => $secureUrl,
+            'width' => isset($response['width']) ? (int) $response['width'] : null,
+            'height' => isset($response['height']) ? (int) $response['height'] : null,
+            'bytes' => isset($response['bytes']) ? (int) $response['bytes'] : null,
+            'format' => isset($response['format']) ? (string) $response['format'] : null,
+            'resource_type' => isset($response['resource_type']) ? (string) $response['resource_type'] : null,
         ];
     }
 
     public function delete(string $publicId): bool
     {
-        $this->ensureCloudinaryIsInstalled();
-
         if ($publicId === '') {
             return false;
         }
 
-        $response = app('cloudinary')->uploadApi()->destroy($publicId, [
-            'resource_type' => 'image',
-        ]);
+        try {
+            $response = $this->cloudinary()->uploadApi()->destroy($publicId, [
+                'resource_type' => 'image',
+            ]);
+        } catch (ImageUploadException $exception) {
+            throw $exception;
+        } catch (Throwable $exception) {
+            throw ImageUploadException::deleteFailed($exception);
+        }
 
-        return ($response['result'] ?? null) === 'ok' || ($response['result'] ?? null) === 'not found';
+        return in_array($response['result'] ?? null, ['ok', 'not found'], true);
     }
 
-    private function ensureCloudinaryIsInstalled(): void
+    private function cloudinary(): Cloudinary
     {
-        if (! class_exists('Cloudinary\\Laravel\\CloudinaryEngine') && ! class_exists('CloudinaryLabs\\CloudinaryLaravel\\CloudinaryEngine')) {
-            throw new RuntimeException('The cloudinary-labs/cloudinary-laravel package is not installed yet. Run composer install after network access is restored.');
+        if (! class_exists(Cloudinary::class)) {
+            throw ImageUploadException::packageMissing();
         }
+
+        $cloudinaryUrl = config('cloudinary.cloudinary_url');
+
+        if (! is_string($cloudinaryUrl) || $cloudinaryUrl === '') {
+            throw ImageUploadException::missingConfiguration();
+        }
+
+        return new Cloudinary($cloudinaryUrl);
     }
 }
