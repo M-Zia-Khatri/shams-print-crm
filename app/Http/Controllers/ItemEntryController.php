@@ -19,6 +19,11 @@ class ItemEntryController extends Controller
     {
     }
 
+    private const PREVIOUS_BALANCES = [
+        'super garment' => 40000.00,
+        'zia' => 1000.00,
+    ];
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('search', ''));
@@ -60,8 +65,6 @@ class ItemEntryController extends Controller
                     ->whereMonth('created_at', (int) $monthNumber);
             });
 
-        $grandTotal = (clone $query)->sum('total_amount');
-
         if (! $request->has('sort') && in_array($dateMode, ['latest', 'oldest'], true)) {
             $direction = $dateMode === 'oldest' ? 'asc' : 'desc';
         }
@@ -71,9 +74,28 @@ class ItemEntryController extends Controller
             ->orderBy('id', $direction)
             ->paginate(15)
             ->withQueryString();
+            
+        $paymentsQuery = \App\Models\ItemPaymentReceived::query()
+            ->when($partyName !== '', fn ($q) => $q->where('party_name', $partyName));
+            
+        $receivedPayments = $paymentsQuery->latest()->get();
+
+        if ($partyName !== '') {
+            
+            $previousBalance = self::PREVIOUS_BALANCES[strtolower($partyName)] ?? 0.00;
+            $totalAmountSum = ItemEntry::where('client_business_name', $partyName)->sum('total_amount');
+            $receivedAmountSum = \App\Models\ItemPaymentReceived::where('party_name', $partyName)->get()->sum(fn($payment) => (float)$payment->received_amount);
+        } else {
+            $previousBalance = array_sum(self::PREVIOUS_BALANCES);
+            $totalAmountSum = ItemEntry::sum('total_amount');
+            $receivedAmountSum = \App\Models\ItemPaymentReceived::all()->sum(fn($payment) => (float)$payment->received_amount);
+        }
+        
+        $grandTotal = $previousBalance + $totalAmountSum - $receivedAmountSum;
 
         return view('item-entries.index', [
             'itemEntries' => $itemEntries,
+            'receivedPayments' => $receivedPayments,
             'partyNames' => ItemEntry::getDistinctPartyNames(),
             'filters' => [
                 'search' => $search,
@@ -84,6 +106,7 @@ class ItemEntryController extends Controller
                 'direction' => $direction,
             ],
             'grandTotal' => $grandTotal,
+            'previousBalance' => $previousBalance,
         ]);
     }
 
