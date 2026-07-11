@@ -9,14 +9,15 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
         "blade-ui-kit/blade-icons": "^1.10",
+        "cloudinary/cloudinary_php": "^2.0",
         "codeat3/blade-clarity-icons": "^1.11",
         "codeat3/blade-game-icons": "^1.6",
         "codeat3/blade-jam-icons": "^1.8",
         "daljo25/blade-pixelicon-icons": "^1.0",
         "laravel/framework": "^13.8",
-        "laravel/tinker": "^3.0"
+        "laravel/tinker": "^3.0",
+        "php": "^8.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

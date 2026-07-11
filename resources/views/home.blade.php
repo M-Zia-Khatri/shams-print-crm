@@ -58,10 +58,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     <!-- Entry -->
-                    <x-dashboard-card title="Entry" description="Add entry">
+                    <x-dashboard-card title="Item Entries" description="View and manage lart item entries.">
                         <x-slot name="icon">
                             <x-jam-write class="text-primary w-6 h-6" />
                         </x-slot>
+                        <form method="GET" action="{{ route('item-entries.index') }}">
+                            <x-action-button type="submit" variant="primary" size="sm">Open Item Entries</x-action-button>
+                        </form>
                     </x-dashboard-card>
 
                     <!-- Employees-->

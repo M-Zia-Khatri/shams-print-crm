@@ -1,1 +1,2 @@
 //
+import './item-entries-index';
