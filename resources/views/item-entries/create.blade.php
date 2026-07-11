@@ -8,11 +8,12 @@
     @endif
 
     <x-dashboard-card title="New Entries" description="Use Add More Entry to submit multiple entries in one batch.">
-        <form method="POST" action="{{ route('item-entries.store') }}" enctype="multipart/form-data" class="w-full space-y-4" id="item-entry-form">
+        <form method="POST" action="{{ route('item-entries.store') }}" enctype="multipart/form-data"
+            class="w-full space-y-4" id="item-entry-form">
             @csrf
 
             <div id="entries-container" class="space-y-4">
-                <x-item-entries.form-fields prefix="entries[0]" :index="0" />
+                <x-form-fields prefix="entries[0]" :index="0" />
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:justify-between">
@@ -27,7 +28,7 @@
     </x-dashboard-card>
 
     <template id="entry-template">
-        <x-item-entries.form-fields prefix="entries[__INDEX__]" :index="'__INDEX__'" />
+        <x-form-fields prefix="entries[__INDEX__]" :index="'__INDEX__'" />
     </template>
 
     <script>
