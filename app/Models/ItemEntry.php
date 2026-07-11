@@ -32,4 +32,16 @@ class ItemEntry extends Model
             'total_amount' => 'decimal:2',
         ];
     }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, string>
+     */
+    public static function getDistinctPartyNames()
+    {
+        return self::query()
+            ->select('client_business_name')
+            ->distinct()
+            ->orderBy('client_business_name')
+            ->pluck('client_business_name');
+    }
 }

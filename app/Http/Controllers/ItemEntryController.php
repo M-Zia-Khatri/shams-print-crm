@@ -74,11 +74,7 @@ class ItemEntryController extends Controller
 
         return view('item-entries.index', [
             'itemEntries' => $itemEntries,
-            'partyNames' => ItemEntry::query()
-                ->select('client_business_name')
-                ->distinct()
-                ->orderBy('client_business_name')
-                ->pluck('client_business_name'),
+            'partyNames' => ItemEntry::getDistinctPartyNames(),
             'filters' => [
                 'search' => $search,
                 'party_name' => $partyName,
@@ -93,7 +89,9 @@ class ItemEntryController extends Controller
 
     public function create(): View
     {
-        return view('item-entries.create');
+        return view('item-entries.create', [
+            'partyNames' => ItemEntry::getDistinctPartyNames(),
+        ]);
     }
 
     public function store(ItemEntryRequest $request): RedirectResponse
