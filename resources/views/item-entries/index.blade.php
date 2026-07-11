@@ -96,10 +96,10 @@
                                     href="{{ $sortUrl('date') }}">Date <span>{{ $sortIndicator('date') }}</span></a>
                             </th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
-                                    href="{{ $sortUrl('lart_number') }}">Lart Number
+                                    href="{{ $sortUrl('lart_number') }}">Lart
                                     <span>{{ $sortIndicator('lart_number') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
-                                    href="{{ $sortUrl('client_business_name') }}">Party Name
+                                    href="{{ $sortUrl('client_business_name') }}">Party
                                     <span>{{ $sortIndicator('client_business_name') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
                                     href="{{ $sortUrl('description') }}">Description
@@ -109,16 +109,16 @@
                                     href="{{ $sortUrl('darjan') }}">Darjan
                                     <span>{{ $sortIndicator('darjan') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
-                                    href="{{ $sortUrl('total_color') }}">Total Color
+                                    href="{{ $sortUrl('total_color') }}">Color
                                     <span>{{ $sortIndicator('total_color') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
-                                    href="{{ $sortUrl('total_rate') }}">Total Rate
+                                    href="{{ $sortUrl('total_rate') }}">T.Rate
                                     <span>{{ $sortIndicator('total_rate') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
                                     href="{{ $sortUrl('size_description') }}">Size
                                     <span>{{ $sortIndicator('size_description') }}</span></a></th>
                             <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
-                                    href="{{ $sortUrl('total_amount') }}">Total Amount
+                                    href="{{ $sortUrl('total_amount') }}">Amount
                                     <span>{{ $sortIndicator('total_amount') }}</span></a></th>
                             @if ($canManageItemEntries)
                                 <th class="text-right">Actions</th>
