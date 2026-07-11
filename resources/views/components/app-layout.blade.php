@@ -81,8 +81,9 @@
 
                 <!-- Nav Links for Desktop (Visual placebo) -->
                 <nav class="hidden md:flex items-center gap-1.5 mr-4">
-                    <a href="#" class="btn btn-ghost btn-sm rounded-lg text-primary">Dashboard</a>
-                    <a href="#"
+                    <a href="/" prefetch
+                        class="btn btn-ghost btn-sm rounded-lg text-primary">Dashboard</a>
+                    <a href="/item-entries" prefetch
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
                     <a href="#"
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Employees</a>
@@ -112,9 +113,9 @@
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button"
                         class="btn btn-ghost btn-circle avatar placeholder bg-base-200 border border-base-300 ">
-                        <div class="bg-primary/10 text-primary rounded-full w-10 flex items-center justify-center content-center">
-                            <span
-                                class="text-sm font-bold">{{ strtoupper(substr($user->name ?? 'U', 0, 2)) }}</span>
+                        <div
+                            class="bg-primary/10 text-primary rounded-full w-10 flex items-center justify-center content-center">
+                            <span class="text-sm font-bold">{{ strtoupper(substr($user->name ?? 'U', 0, 2)) }}</span>
                         </div>
                     </div>
                     <ul tabindex="0"
