@@ -14,9 +14,9 @@ class SuperAdminSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['name' => 'admin'],
+            ['name' => env('SUPER_ADMIN_NAME', 'admin')],
             [
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('SUPER_ADMIN_PASSWORD', 'password')),
                 'role' => 'super_admin',
             ],
         );
