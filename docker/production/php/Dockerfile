@@ -19,10 +19,10 @@ RUN apk add --no-cache \
         gd \
         intl \
         mbstring \
-        opcache \
         pcntl \
         pdo_mysql \
         zip \
+    && (php -m | grep -qi opcache || docker-php-ext-install opcache) \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apk del $PHPIZE_DEPS
