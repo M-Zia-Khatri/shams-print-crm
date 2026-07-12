@@ -79,8 +79,14 @@ The production Docker environment is fully containerized and includes:
 
 - `app`: PHP-FPM application container
 - `nginx`: public HTTP entrypoint serving Laravel from `public/`
+- `queue`: background job worker (`php artisan queue:work`)
+- `scheduler`: cron-style task runner (`php artisan schedule:run` every 60 s)
 - `mysql`: persistent MySQL database
 - `redis`: persistent Redis instance for cache, sessions, and queues
+
+> **Sharing a VPS?** Set `APP_PORT` to a value that does not conflict with ports already in use on the host — specifically, avoid `80`, `3000`, and `5000`. The default is `8080`. For a complete deployment walkthrough and host-level Nginx/SSL setup instructions, see:
+> - [DEPLOYMENT.md](DEPLOYMENT.md) — end-to-end deployment guide
+> - [docker/production/HOST_NGINX_SETUP.md](docker/production/HOST_NGINX_SETUP.md) — host Nginx reverse proxy and Certbot steps
 
 ### 1. Create production environment file
 

@@ -4,13 +4,19 @@ WORKDIR /var/www/html
 
 RUN apk add --no-cache \
         bash \
+        freetype-dev \
         icu-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
         libzip-dev \
         mysql-client \
         oniguruma-dev \
         $PHPIZE_DEPS \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
         bcmath \
+        exif \
+        gd \
         intl \
         mbstring \
         opcache \
@@ -22,10 +28,14 @@ RUN apk add --no-cache \
     && apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
 COPY . .
 
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
-    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
 USER www-data
