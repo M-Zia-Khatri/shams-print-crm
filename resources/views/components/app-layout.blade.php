@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     <style>
         body {
@@ -62,7 +63,7 @@
             class="navbar bg-base-100 border-b border-base-300 px-4 sm:px-8 py-3 sticky top-0 z-40 shadow-sm backdrop-blur bg-base-100/95">
             <div class="flex-1 gap-2.5">
                 <!-- Branding stacks logo -->
-                <div class="p-2 bg-primary/10 text-primary rounded-xl flex gap-2">
+                <div class="p-2 px-6 bg-primary/10 text-primary rounded-xl w-fit flex gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path d="M12 2L2 7l10 5 10-5-10-5z" />
                         <path d="M2 17l10 5 10-5M2 12l10 5 10-5" opacity="0.8" />
@@ -82,15 +83,15 @@
                 <!-- Nav Links for Desktop (Visual placebo) -->
                 <nav class="hidden md:flex items-center gap-1.5 mr-4">
                     <a href="/" prefetch
-                        class="btn btn-ghost btn-sm rounded-lg text-primary">Dashboard</a>
+                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Dashboard</a>
                     <a href="/item-entries" prefetch
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
                     <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Employees</a>
+                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Employees</a>
                     <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Expenses</a>
+                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Expenses</a>
                     <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Invoices</a>
+                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Invoices</a>
                 </nav>
 
                 <!-- Theme Toggle Button -->
@@ -123,14 +124,12 @@
                         <li
                             class="menu-title px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-base-content/40">
                             Account Details</li>
-                        <div class="px-4 py-2 border-b border-base-200/60 pb-3">
+                        <div class="px-4 py-2 flex justify-between border-b border-base-200/60 pb-3">
                             <p class="font-bold text-sm text-base-content truncate">{{ $user->name ?? 'User Name' }}</p>
                             <span
                                 class="badge {{ $roleBadgeClass }} badge-xs font-bold mt-1.5 py-2 px-2.5 rounded-md">{{ $roleName }}</span>
                         </div>
-                        <li class="mt-1.5"><a href="#" class="py-2.5 font-medium rounded-lg">My Profile</a></li>
-                        <li><a href="#" class="py-2.5 font-medium rounded-lg">System Settings</a></li>
-                        <li class="border-t border-base-200 mt-1.5 pt-1.5">
+                        <li class=" mt-1.5 pt-1.5">
                             <form method="POST" action="{{ route('logout') }}" class="w-full">
                                 @csrf
                                 <button type="submit"
@@ -148,6 +147,23 @@
                 </div>
             </div>
         </header>
+
+        <!-- Nav Links for mobile (Visual placebo) -->
+        <div class="md:hidden border-y border-base-300 bg-base-100/95 backdrop-blur sticky top-[4.5rem] z-30">
+            <nav class="flex items-center gap-1.5 mr-4 flex-wrap px-4 py-2.5">
+                <a href="/" prefetch
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Dashboard</a>
+                <a href="/item-entries" prefetch
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
+                <a href="#"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Employees</a>
+                <a href="#"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Expenses</a>
+                <a href="#"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Invoices</a>
+            </nav>
+        </div>
+
 
         <!-- Main Body Area -->
         <main class="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto space-y-8">

@@ -30,7 +30,8 @@
 
         @if ($canManageItemEntries)
             <div class="flex gap-2">
-                <x-action-button type="button" variant="secondary" onclick="window.openPaymentModal()">Add Received Payment</x-action-button>
+                <x-action-button type="button" variant="secondary" onclick="window.openPaymentModal()">Add Received
+                    Payment</x-action-button>
 
                 <form method="GET" action="{{ route('item-entries.create') }}">
                     <x-action-button type="submit" variant="primary">Add Entry</x-action-button>
@@ -117,7 +118,7 @@
                                     <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
                                             href="{{ $sortUrl('client_business_name') }}">Party
                                             <span>{{ $sortIndicator('client_business_name') }}</span></a></th>
-                                    <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
+                                    <th><a class="link-hover inline-flex items-center gap-1 font-semibold w-32"
                                             href="{{ $sortUrl('description') }}">Description
                                             <span>{{ $sortIndicator('description') }}</span></a></th>
                                     <th>Image</th>
@@ -130,7 +131,7 @@
                                     <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
                                             href="{{ $sortUrl('total_rate') }}">T.Rate
                                             <span>{{ $sortIndicator('total_rate') }}</span></a></th>
-                                    <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
+                                    <th><a class="link-hover inline-flex items-center gap-1 font-semibold w-18"
                                             href="{{ $sortUrl('size_description') }}">Size
                                             <span>{{ $sortIndicator('size_description') }}</span></a></th>
                                     <th><a class="link-hover inline-flex items-center gap-1 font-semibold"
@@ -155,13 +156,16 @@
                                         <td>{{ $itemEntry->total_color }}</td>
                                         <td>{{ number_format((float) $itemEntry->total_rate, 2) }}</td>
                                         <td>{{ $itemEntry->size_description }}</td>
-                                        <td class="font-semibold">{{ number_format((float) $itemEntry->total_amount, 2) }}</td>
+                                        <td class="font-semibold">
+                                            {{ number_format((float) $itemEntry->total_amount, 2) }}</td>
                                         @if ($canManageItemEntries)
                                             <td>
                                                 <div class="flex justify-end gap-2">
-                                                    <form method="GET" action="{{ route('item-entries.edit', $itemEntry) }}">
+                                                    <form method="GET"
+                                                        action="{{ route('item-entries.edit', $itemEntry) }}">
                                                         <x-action-button type="submit" variant="secondary"
-                                                            size="sm"><x-feathericon-edit class="w-4 h-4" /></x-action-button>
+                                                            size="sm"><x-feathericon-edit
+                                                                class="w-4 h-4" /></x-action-button>
                                                     </form>
                                                     <form method="POST"
                                                         action="{{ route('item-entries.destroy', $itemEntry) }}"
@@ -169,7 +173,8 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <x-action-button type="submit" variant="error"
-                                                            size="sm"><x-heroicon-o-trash class="w-4 h-4" /></x-action-button>
+                                                            size="sm"><x-heroicon-o-trash
+                                                                class="w-4 h-4" /></x-action-button>
                                                     </form>
                                                 </div>
                                             </td>
@@ -178,12 +183,13 @@
                                 @endforeach
                             </tbody>
                         </table>
-        
+
                         <div class="mt-4">
                             {{ $itemEntries->links() }}
                         </div>
                     @else
-                        <x-empty-state title="No item entries found" message="No item entries match the current filters.">
+                        <x-empty-state title="No item entries found"
+                            message="No item entries match the current filters.">
                             <div class="flex flex-wrap justify-center gap-2">
                                 <a href="{{ route('item-entries.index') }}" class="btn btn-ghost">Reset Filters</a>
                                 @if ($canManageItemEntries)
@@ -197,9 +203,10 @@
                 </div>
             </x-dashboard-card>
         </div>
-        
+
         <div>
-            <x-dashboard-card title="Received Payments" description="History of received payments for selected filters.">
+            <x-dashboard-card title="Received Payments"
+                description="History of received payments for selected filters.">
                 <div class="w-full overflow-x-auto">
                     @if ($receivedPayments->isNotEmpty())
                         <table class="table table-sm w-full table-zebra">
@@ -207,32 +214,38 @@
                                 <tr>
                                     <th>Party</th>
                                     <th>Amount</th>
-                                    @if($canManageItemEntries)
-                                    <th class="text-right">Actions</th>
+                                    @if ($canManageItemEntries)
+                                        <th class="text-right">Actions</th>
                                     @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($receivedPayments as $payment)
+                                @foreach ($receivedPayments as $payment)
                                     <tr>
                                         <td>
-                                            <div class="font-semibold truncate max-w-[120px]" title="{{ $payment->party_name }}">
+                                            <div class="font-semibold truncate max-w-[120px]"
+                                                title="{{ $payment->party_name }}">
                                                 {{ $payment->party_name }}
                                             </div>
-                                            <div class="text-xs text-base-content/70 truncate max-w-[120px]" title="{{ $payment->description }}">
+                                            <div class="text-xs text-base-content/70 truncate max-w-[120px]"
+                                                title="{{ $payment->description }}">
                                                 {{ $payment->description }}
                                             </div>
                                         </td>
                                         <td class="font-bold text-success w-[80px]">
-                                            +{{ number_format((float)$payment->received_amount, 2) }}
+                                            +{{ number_format((float) $payment->received_amount, 2) }}
                                         </td>
-                                        @if($canManageItemEntries)
-                                        <td class="w-[100px]">
-                                            <div class="flex justify-end gap-1">
-                                                <button type="button" class="btn btn-xs btn-outline" onclick="window.editPaymentModal({{ $payment->id }}, '{{ addslashes($payment->description) }}', '{{ addslashes($payment->party_name) }}', {{ $payment->received_amount }})"><x-feathericon-edit class="w-4 h-4" /></button>
-                                                <button type="button" class="btn btn-xs btn-outline btn-error" onclick="window.deletePayment({{ $payment->id }})"><x-heroicon-o-trash class="w-4 h-4" /></button>
-                                            </div>
-                                        </td>
+                                        @if ($canManageItemEntries)
+                                            <td class="w-[100px]">
+                                                <div class="flex justify-end gap-1">
+                                                    <button type="button" class="btn btn-xs btn-outline"
+                                                        onclick="window.editPaymentModal({{ $payment->id }}, '{{ addslashes($payment->description) }}', '{{ addslashes($payment->party_name) }}', {{ $payment->received_amount }})"><x-feathericon-edit
+                                                            class="w-4 h-4" /></button>
+                                                    <button type="button" class="btn btn-xs btn-outline btn-error"
+                                                        onclick="window.deletePayment({{ $payment->id }})"><x-heroicon-o-trash
+                                                            class="w-4 h-4" /></button>
+                                                </div>
+                                            </td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -247,7 +260,7 @@
             </x-dashboard-card>
         </div>
     </div>
-    
+
     @if ($canManageItemEntries)
         <dialog id="receivedPaymentModal" class="modal">
             <div class="modal-box">
@@ -257,24 +270,29 @@
                     <input type="hidden" name="payment_id" id="paymentId">
                     <div class="form-control mb-4 mt-4">
                         <label class="label"><span class="label-text font-semibold">Description</span></label>
-                        <input type="text" name="description" id="paymentDescription" class="input input-bordered w-full" required>
+                        <input type="text" name="description" id="paymentDescription"
+                            class="input input-bordered w-full" required>
                     </div>
                     <div class="form-control mb-4">
                         <label class="label"><span class="label-text font-semibold">Party Name</span></label>
-                        <select name="party_name" id="paymentPartyName" class="select select-bordered w-full" required>
+                        <select name="party_name" id="paymentPartyName" class="select select-bordered w-full"
+                            required>
                             <option value="" disabled selected>Select Party</option>
-                            @foreach($partyNames as $name)
+                            @foreach ($partyNames as $name)
                                 <option value="{{ $name }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-control mb-6">
                         <label class="label"><span class="label-text font-semibold">Received Amount</span></label>
-                        <input type="number" step="0.01" min="0" name="received_amount" id="paymentAmount" class="input input-bordered w-full" required>
+                        <input type="number" step="0.01" min="0" name="received_amount"
+                            id="paymentAmount" class="input input-bordered w-full" required>
                     </div>
                     <div class="modal-action">
-                        <button type="button" class="btn" onclick="document.getElementById('receivedPaymentModal').close()">Cancel</button>
-                        <x-action-button type="submit" variant="primary" id="savePaymentBtn">Save Payment</x-action-button>
+                        <button type="button" class="btn"
+                            onclick="document.getElementById('receivedPaymentModal').close()">Cancel</button>
+                        <x-action-button type="submit" variant="primary" id="savePaymentBtn">Save
+                            Payment</x-action-button>
                     </div>
                 </form>
             </div>
@@ -283,10 +301,11 @@
             </form>
         </dialog>
     @endif
-    
+
     @push('scripts')
         <script>
-            window.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value;
+            window.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector(
+                'input[name="_token"]')?.value;
         </script>
         @vite('resources/js/item-entries-index.js')
     @endpush

@@ -23,7 +23,7 @@
             <div>
                 <div class="flex items-center gap-2.5 flex-wrap">
                     <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-base-content">
-                        Welcome back, {{ $user->name ?? 'User' }}
+                        Welcome back, {{ ucfirst($user->name) ?? 'User' }}
                     </h1>
                     <span
                         class="badge {{ $roleBadgeClass }} font-bold py-2.5 px-3 rounded-lg shadow-sm border">{{ $roleName }}</span>
@@ -62,9 +62,10 @@
                         <x-slot name="icon">
                             <x-jam-write class="text-primary w-6 h-6" />
                         </x-slot>
-                        <form method="GET" action="{{ route('item-entries.index') }}">
-                            <x-action-button type="submit" variant="primary" size="sm">Open Item Entries</x-action-button>
-                        </form>
+                        <a href="/item-entries" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">Open Item
+                                Entries</x-action-button>
+                        </a>
                     </x-dashboard-card>
 
                     <!-- Employees-->
@@ -72,19 +73,23 @@
                         <x-slot name="icon">
                             <x-clarity-employee-group-line class='text-primary w-6 h-6' />
                         </x-slot>
+                        <a href="#" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                        </a>
                     </x-dashboard-card>
-                    
+
                     <!-- Expenses -->
-                    <x-dashboard-card title="Expenses"
-                    description="Track and manage all business expenses.">
-                    <x-slot name="icon">
+                    <x-dashboard-card title="Expenses" description="Track and manage all business expenses.">
+                        <x-slot name="icon">
                             <x-gameicon-expense class='text-primary/0 w-6 h-6' />
                         </x-slot>
+                        <a href="#" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                        </a>
                     </x-dashboard-card>
 
                     <!-- Invoices Card -->
-                    <x-dashboard-card title="Invoices"
-                        description="Generate and manage invoices for clients.">
+                    <x-dashboard-card title="Invoices" description="Generate and manage invoices for clients.">
                         <x-slot name="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -92,12 +97,14 @@
                                     d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 2.25 19.5Z" />
                             </svg>
                         </x-slot>
+                        <a href="#" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                        </a>
                     </x-dashboard-card>
-
                 </div>
             </div>
 
-            <!-- Recent Activity Section -->
+            {{-- <!-- Recent Activity Section -->
             <div class="card bg-base-100 border border-base-300 shadow-sm rounded-2xl p-6">
                 <x-section-title title="Recent Activity Log"
                     subtitle="Chronological feed of transactions and edits in the system." />
@@ -105,7 +112,7 @@
                 <!-- Empty State placeholder -->
                 <x-empty-state title="No recent activity available"
                     message="All database records are calm. Any updates or changes in client ledger files or orders will show up here." />
-            </div>
+            </div> --}}
 
         </div>
 

@@ -225,15 +225,6 @@
                                 </div>
                             </div>
 
-                            <!-- Remember Me + Forgot Password row -->
-                            <div class="flex items-center justify-between mt-5 mb-6">
-                                <label class="label cursor-pointer gap-2.5 justify-start py-0 select-none">
-                                    <input type="checkbox" name="remember" id="remember" class="checkbox checkbox-primary checkbox-sm rounded-md" />
-                                    <span class="label-text text-sm font-semibold text-base-content/75">Remember device</span>
-                                </label>
-                                <a href="#" class="text-xs font-bold text-primary hover:underline transition-all">Forgot?</a>
-                            </div>
-
                             <!-- Submit Button with loading/disabled behavior -->
                             <div class="form-control mt-6">
                                 <button type="submit" id="submit-btn" class="btn btn-primary w-full text-base font-bold shadow-md hover:shadow-lg rounded-xl transition-all duration-200 gap-2">
