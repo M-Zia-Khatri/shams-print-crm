@@ -9,19 +9,12 @@ if [ -z "${APP_KEY}" ]; then
     exit 1
 fi
 
-# ── 2. App-only bootstrap (migrations + storage link) ───────────────────────
+# ── 2. App-only bootstrap (migrations) ─────────────────────────────────────
 #    Only run when we are the php-fpm process (i.e. the 'app' service).
 #    queue and scheduler containers override CMD, so '$1' will NOT be 'php-fpm'.
 if [ "$1" = "php-fpm" ]; then
     echo "INFO: Running database migrations..."
     php artisan migrate --force
-
-    echo "INFO: Ensuring storage symlink exists..."
-    if [ ! -L public/storage ]; then
-        php artisan storage:link
-    else
-        echo "INFO: storage symlink already exists, skipping."
-    fi
 fi
 
 # ── 3. Hand off to the original command ─────────────────────────────────────

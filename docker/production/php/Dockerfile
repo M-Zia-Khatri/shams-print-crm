@@ -41,6 +41,8 @@ RUN composer dump-autoload --optimize \
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
+RUN php artisan storage:link
+
 COPY docker/production/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 USER root
