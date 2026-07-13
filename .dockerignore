@@ -1,0 +1,32 @@
+# === Version control / IDE === 
+.git
+.gitattributes
+.gitignore
+.editorconfig
+.vscode
+.cursor
+.agents
+.codex
+
+# === Local environment / secrets ===
+.env
+.env.*
+!.env.example
+
+# === Node (the node_builder stage installs its own deps) ===
+node_modules
+
+# === PHP / Composer (the production stage installs its own deps) ===
+vendor
+
+# === Vite compiled output — built inside the container ===
+public/build
+
+# === Test & dev artefacts ===
+tests
+phpunit.xml
+*.log
+.temp
+
+# === Docker configs (already inside the image where needed) ===
+docker

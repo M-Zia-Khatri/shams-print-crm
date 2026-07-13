@@ -18,15 +18,7 @@
             font-family: 'Outfit', sans-serif;
         }
     </style>
-
-    <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@5.6.16/daisyui.css" rel="stylesheet" type="text/css" />
-        <script src="https://cdn.tailwindcss.com"></script>
-    @endif
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         // Inline Theme script to prevent flash
         (function() {
