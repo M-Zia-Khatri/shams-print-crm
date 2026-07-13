@@ -99,10 +99,11 @@ RUN cp -a public /var/www/html/public-image \
 # Entrypoint
 # ---------------------------------------------------------------------------
 COPY docker/production/php/entrypoint.sh /usr/local/bin/entrypoint.sh
-
-USER root
 RUN chmod +x /usr/local/bin/entrypoint.sh
-USER www-data
+
+# Stay root for ENTRYPOINT: named volumes (app_public/app_storage/app_cache)
+# are created root-owned on first boot, and only root can chown them before
+# php-fpm drops privileges to www-data per its own pool config.
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]

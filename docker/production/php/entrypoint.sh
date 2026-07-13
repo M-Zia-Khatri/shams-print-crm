@@ -22,6 +22,14 @@ if [ "$1" = "php-fpm" ]; then
     fi
 fi
 
+# ── 2b. Fix ownership on shared named volumes (root-owned on first boot) ──
+#    Runs on every service (app/queue/scheduler) since all three mount
+#    app_storage/app_cache; only 'app' also mounts app_public.
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+if [ "$1" = "php-fpm" ]; then
+    chown -R www-data:www-data /var/www/html/public
+fi
+
 # ── 3. App-only bootstrap (migrations) ─────────────────────────────────────
 #    Only run when we are the php-fpm process (i.e. the 'app' service).
 #    queue and scheduler containers override CMD, so '$1' will NOT be 'php-fpm'.
