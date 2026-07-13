@@ -27,6 +27,3 @@ tests
 phpunit.xml
 *.log
 .temp
-
-# === Docker configs (already inside the image where needed) ===
-docker
