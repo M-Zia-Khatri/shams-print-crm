@@ -41,6 +41,11 @@ RUN composer dump-autoload --optimize \
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
+COPY docker/production/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+USER root
+RUN chmod +x /usr/local/bin/entrypoint.sh
 USER www-data
 
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]

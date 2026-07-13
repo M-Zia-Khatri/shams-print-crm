@@ -71,6 +71,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      app:
+        condition: service_healthy
     networks:
       - shams_internal
 
@@ -94,6 +96,8 @@ services:
       mysql:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      app:
         condition: service_healthy
     networks:
       - shams_internal
