@@ -14,7 +14,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
-      - app_public:/var/www/html/public/build
+      - app_public:/var/www/html/public
     depends_on:
       mysql:
         condition: service_healthy
@@ -35,9 +35,11 @@ services:
     ports:
       - "${APP_PORT:-8080}:80"
     volumes:
-      # Serve Vite build output from the PHP image — do NOT bind-mount the
-      # source root here as that would overwrite the baked-in public/build/.
-      - app_public:/var/www/html/public/build:ro
+      # Serve the full public/ dir (index.php, build/, static assets) from the
+      # shared volume seeded by the app container's entrypoint. Do NOT
+      # bind-mount the source root here — that would overwrite the seeded
+      # volume with an unbuilt tree.
+      - app_public:/var/www/html/public:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - app_storage:/var/www/html/storage:ro
       - app_cache:/var/www/html/bootstrap/cache:ro
@@ -69,6 +71,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
+      - app_public:/var/www/html/public
     depends_on:
       mysql:
         condition: service_healthy
@@ -95,6 +98,7 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
       - app_cache:/var/www/html/bootstrap/cache
+      - app_public:/var/www/html/public
     depends_on:
       mysql:
         condition: service_healthy
@@ -151,7 +155,8 @@ networks:
 volumes:
   app_storage:
   app_cache:
-  # Shared volume: the PHP image writes public/build here; Nginx reads it.
+  # Shared volume: the app container seeds this with its full public/ dir
+  # (index.php + build/) on first boot; Nginx reads it read-only.
   app_public:
   mysql_production_data:
   redis_production_data:

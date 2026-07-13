@@ -9,7 +9,20 @@ if [ -z "${APP_KEY}" ]; then
     exit 1
 fi
 
-# ── 2. App-only bootstrap (migrations) ─────────────────────────────────────
+# ── 2. Seed the shared public/ volume (app-only) ───────────────────────────
+#    The `app_public` named volume mounts over ./public in every container
+#    that uses it, hiding the baked-in index.php/build/ on first boot (empty
+#    volume). Seed it from the pristine snapshot taken at image build time.
+#    Only the 'app' (php-fpm) service performs the seed to avoid races with
+#    queue/scheduler starting concurrently.
+if [ "$1" = "php-fpm" ]; then
+    if [ ! -f /var/www/html/public/index.php ]; then
+        echo "INFO: Seeding empty public/ volume from image snapshot..."
+        cp -a /var/www/html/public-image/. /var/www/html/public/
+    fi
+fi
+
+# ── 3. App-only bootstrap (migrations) ─────────────────────────────────────
 #    Only run when we are the php-fpm process (i.e. the 'app' service).
 #    queue and scheduler containers override CMD, so '$1' will NOT be 'php-fpm'.
 if [ "$1" = "php-fpm" ]; then
@@ -17,5 +30,5 @@ if [ "$1" = "php-fpm" ]; then
     php artisan migrate --force
 fi
 
-# ── 3. Hand off to the original command ─────────────────────────────────────
+# ── 4. Hand off to the original command ─────────────────────────────────────
 exec "$@"

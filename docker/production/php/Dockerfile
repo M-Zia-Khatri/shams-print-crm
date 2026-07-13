@@ -88,6 +88,14 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 RUN php artisan storage:link
 
 # ---------------------------------------------------------------------------
+# Pristine public/ snapshot for seeding the shared named volume.
+# The `app_public` volume mounted at runtime shadows ./public, so entrypoint.sh
+# copies from this untouched snapshot into the empty/first-boot volume.
+# ---------------------------------------------------------------------------
+RUN cp -a public /var/www/html/public-image \
+    && chown -R www-data:www-data /var/www/html/public-image
+
+# ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
 COPY docker/production/php/entrypoint.sh /usr/local/bin/entrypoint.sh
