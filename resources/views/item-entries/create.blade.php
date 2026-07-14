@@ -1,15 +1,25 @@
 <x-app-layout>
-    <x-section-title title="Add Item Entries" subtitle="Submit one or more item entries. Total amount is computed automatically after submission." />
+    <x-section-title title="Add Item Entries"
+        subtitle="Submit one or more item entries. Total amount is computed automatically after submission." />
 
-    @if($errors->any())
+    @if ($errors->any())
         <div class="alert alert-error shadow-sm mb-4">
-            <span>Please review the highlighted fields and try again.</span>
+            <span>
+                Please review the highlighted fields and try again.
+                @error('entries')
+                    {{ $message }}
+                @enderror
+            </span>
         </div>
     @endif
 
     <div id="draft-restored-alert" class="alert alert-info shadow-sm mb-4 hidden items-center justify-between">
         <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
             <span>Draft restored successfully.</span>
         </div>
         <button type="button" id="discard-draft-button" class="btn btn-sm btn-ghost">Discard Draft</button>
@@ -18,7 +28,7 @@
     <script type="application/json" id="party-names-data">
         {!! $partyNames->toJson() !!}
     </script>
-    
+
     <x-dashboard-card title="New Entries" description="Use Add More Entry to submit multiple entries in one batch.">
         <form method="POST" action="{{ route('item-entries.store') }}" enctype="multipart/form-data"
             class="w-full space-y-4" id="item-entry-form">
@@ -44,13 +54,13 @@
     </template>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('entries-container');
             const template = document.getElementById('entry-template');
             const addButton = document.getElementById('add-entry-button');
             let entryIndex = 1;
 
-            addButton.addEventListener('click', function () {
+            addButton.addEventListener('click', function() {
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = template.innerHTML.replaceAll('__INDEX__', entryIndex);
                 const entry = wrapper.firstElementChild;
@@ -59,7 +69,7 @@
                 removeButton.type = 'button';
                 removeButton.className = 'btn btn-ghost btn-sm text-error mt-2';
                 removeButton.textContent = 'Remove Entry';
-                removeButton.addEventListener('click', function () {
+                removeButton.addEventListener('click', function() {
                     entry.remove();
                     removeButton.remove();
                 });

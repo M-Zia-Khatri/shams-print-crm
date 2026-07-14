@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ItemEntryRequest;
 use App\Jobs\PersistItemEntriesJob;
 use App\Models\ItemEntry;
+use App\Models\ItemPaymentReceived;
 use App\Services\Contracts\ImageUploadServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,9 +16,7 @@ use Throwable;
 
 class ItemEntryController extends Controller
 {
-    public function __construct(private ImageUploadServiceInterface $imageUploadService)
-    {
-    }
+    public function __construct(private ImageUploadServiceInterface $imageUploadService) {}
 
     private const PREVIOUS_BALANCES = [
         'super garment' => 40000.00,
@@ -74,23 +73,23 @@ class ItemEntryController extends Controller
             ->orderBy('id', $direction)
             ->paginate(15)
             ->withQueryString();
-            
-        $paymentsQuery = \App\Models\ItemPaymentReceived::query()
+
+        $paymentsQuery = ItemPaymentReceived::query()
             ->when($partyName !== '', fn ($q) => $q->where('party_name', $partyName));
-            
+
         $receivedPayments = $paymentsQuery->latest()->get();
 
         if ($partyName !== '') {
-            
+
             $previousBalance = self::PREVIOUS_BALANCES[strtolower($partyName)] ?? 0.00;
             $totalAmountSum = ItemEntry::where('client_business_name', $partyName)->sum('total_amount');
-            $receivedAmountSum = \App\Models\ItemPaymentReceived::where('party_name', $partyName)->get()->sum(fn($payment) => (float)$payment->received_amount);
+            $receivedAmountSum = ItemPaymentReceived::where('party_name', $partyName)->get()->sum(fn ($payment) => (float) $payment->received_amount);
         } else {
             $previousBalance = array_sum(self::PREVIOUS_BALANCES);
             $totalAmountSum = ItemEntry::sum('total_amount');
-            $receivedAmountSum = \App\Models\ItemPaymentReceived::all()->sum(fn($payment) => (float)$payment->received_amount);
+            $receivedAmountSum = ItemPaymentReceived::all()->sum(fn ($payment) => (float) $payment->received_amount);
         }
-        
+
         $grandTotal = $previousBalance + $totalAmountSum - $receivedAmountSum;
 
         return view('item-entries.index', [
@@ -133,6 +132,16 @@ class ItemEntryController extends Controller
             PersistItemEntriesJob::dispatch($preparedEntries);
         } catch (Throwable $exception) {
             $this->rollbackUploadedImages($uploadedPublicIds);
+
+            // TEMPORARY DIAGNOSTIC LOGGING — remove once the underlying
+            // upload/persist failure is identified and fixed.
+            Log::error('ItemEntry store failed', [
+                'message' => $exception->getMessage(),
+                'exception_class' => get_class($exception),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
 
             return back()
                 ->withInput()
