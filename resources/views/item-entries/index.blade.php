@@ -48,11 +48,6 @@
 
     <div class="stats shadow w-full mb-4">
         <div class="stat">
-            <div class="stat-title">Previous Balance</div>
-            <div class="stat-value text-base-content">{{ number_format((float) $previousBalance, 2) }}</div>
-            <div class="stat-desc">For selected filters</div>
-        </div>
-        <div class="stat">
             <div class="stat-title">Grand Total</div>
             <div class="stat-value text-primary">{{ number_format((float) $grandTotal, 2) }}</div>
             <div class="stat-desc">Prev. Balance + Entries - Payments</div>
