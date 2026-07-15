@@ -80,8 +80,8 @@
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
                     <a href="#"
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Employees</a>
-                    <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Expenses</a>
+                    <a href="/expenses" prefetch
+                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Expenses</a>
                     <a href="#"
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Invoices</a>
                 </nav>

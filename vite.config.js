@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/item-entries-create.js',
                 'resources/js/item-entries-index.js',
+                'resources/js/expenses-create.js',
             ],
             refresh: true,
             fonts: [

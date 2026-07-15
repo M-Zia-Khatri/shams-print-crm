@@ -74,17 +74,19 @@
                             <x-clarity-employee-group-line class='text-primary w-6 h-6' />
                         </x-slot>
                         <a href="#" prefetch>
-                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                            <x-action-button type="submit" variant="primary" size="sm">comming
+                                soon</x-action-button>
                         </a>
                     </x-dashboard-card>
 
                     <!-- Expenses -->
-                    <x-dashboard-card title="Expenses" description="Track and manage all business expenses.">
+                    <x-dashboard-card title="Expenses" description="Track and manage business expenses.">
                         <x-slot name="icon">
-                            <x-gameicon-expense class='text-primary/0 w-6 h-6' />
+                            <x-gameicon-expense class='text-primary w-6 h-6' />
                         </x-slot>
-                        <a href="#" prefetch>
-                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                        <a href="/expenses" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">Manage
+                                Expenses</x-action-button>
                         </a>
                     </x-dashboard-card>
 
@@ -98,7 +100,8 @@
                             </svg>
                         </x-slot>
                         <a href="#" prefetch>
-                            <x-action-button type="submit" variant="primary" size="sm">comming soon</x-action-button>
+                            <x-action-button type="submit" variant="primary" size="sm">comming
+                                soon</x-action-button>
                         </a>
                     </x-dashboard-card>
                 </div>
