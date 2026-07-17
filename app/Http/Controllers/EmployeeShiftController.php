@@ -27,7 +27,7 @@ class EmployeeShiftController extends Controller
         $validated = $request->validated();
         $shiftDate = $validated['shift_date'];
         $defaultShift = $validated['default_shift'];
-        $checkedEmployeeIds = $validated['employee_ids'];
+        $checkedEmployeeIds = array_map('intval', $validated['employee_ids'] ?? []);
         $overrides = $validated['overrides'] ?? [];
 
         $allEmployeeIds = Employee::active()->pluck('id');
@@ -45,7 +45,7 @@ class EmployeeShiftController extends Controller
 
         DB::transaction(function () use ($allEmployeeIds, $checkedEmployeeIds, $overrides, $defaultShift, $shiftDate): void {
             foreach ($allEmployeeIds as $employeeId) {
-                $isChecked = in_array($employeeId, $checkedEmployeeIds, true);
+                $isChecked = in_array((int) $employeeId, $checkedEmployeeIds, true);
 
                 $shift = $isChecked
                     ? ($overrides[$employeeId] ?? $defaultShift)

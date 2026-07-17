@@ -70,7 +70,7 @@
     </x-dashboard-card>
     
 
-    <x-dashboard-card title="Employees" description="All employees">
+    <x-dashboard-card title="Employees" description="Lifetime earned, advance, bonus, paid, and remaining.">
         <div class="w-full overflow-x-auto">
             @if ($employees->isNotEmpty())
                 <table class="table table-zebra w-full">
@@ -83,6 +83,8 @@
                             <th>Phone</th>
                             <th>Status</th>
                             <th>Earned</th>
+                            <th>Advance</th>
+                            <th>Bonus</th>
                             <th>Paid</th>
                             <th>Remaining</th>
                             <th class="text-right">Actions</th>
@@ -100,6 +102,8 @@
                                     <span class="badge {{ $employee->status->value === 'active' ? 'badge-success' : 'badge-ghost' }}">{{ $employee->status->label() }}</span>
                                 </td>
                                 <td>{{ number_format((float) $employee->lifetime_earned, 2) }}</td>
+                                <td>{{ number_format((float) $employee->lifetime_advance, 2) }}</td>
+                                <td>{{ number_format((float) $employee->lifetime_bonus, 2) }}</td>
                                 <td>{{ number_format((float) $employee->lifetime_paid, 2) }}</td>
                                 <td class="font-semibold">{{ number_format((float) $employee->lifetime_remaining, 2) }}</td>
                                 <td>

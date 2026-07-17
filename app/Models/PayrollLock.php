@@ -43,4 +43,13 @@ class PayrollLock extends Model
             ->whereDate('week_end_date', $weekEnd)
             ->first();
     }
+
+    public static function findOverlapping(\DateTimeInterface|string $start, \DateTimeInterface|string $end): ?self
+    {
+        return self::query()
+            ->whereDate('week_start_date', '<=', $end)
+            ->whereDate('week_end_date', '>=', $start)
+            ->orderBy('week_start_date')
+            ->first();
+    }
 }

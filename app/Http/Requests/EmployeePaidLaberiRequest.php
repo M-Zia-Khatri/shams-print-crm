@@ -15,6 +15,15 @@ class EmployeePaidLaberiRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('payments') && $this->route('employee') !== null) {
+            $this->merge([
+                'employee_id' => $this->route('employee')->id,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         if ($this->has('payments')) {
@@ -58,5 +67,19 @@ class EmployeePaidLaberiRequest extends FormRequest
     public function validatedPayments(): array
     {
         return $this->validated('payments', []);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function paymentAttributes(): array
+    {
+        return $this->safe()->only([
+            'amount',
+            'paid_date',
+            'payment_type',
+            'reference_no',
+            'description',
+        ]);
     }
 }

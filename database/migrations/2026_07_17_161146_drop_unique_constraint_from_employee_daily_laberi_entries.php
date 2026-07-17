@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('employee_daily_laberi_entries', function (Blueprint $table) {
+            $table->dropForeign(['employee_id']);
+            $table->dropUnique(['employee_id', 'laberi_date']);
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('employee_daily_laberi_entries', function (Blueprint $table) {
+            $table->dropForeign(['employee_id']);
+            $table->unique(['employee_id', 'laberi_date']);
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
+        });
+    }
+};

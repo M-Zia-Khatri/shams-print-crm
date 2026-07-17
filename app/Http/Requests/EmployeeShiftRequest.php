@@ -20,7 +20,7 @@ class EmployeeShiftRequest extends FormRequest
         return [
             'shift_date' => ['required', 'date'],
             'default_shift' => ['required', Rule::enum(DailyShift::class)],
-            'employee_ids' => ['required', 'array', 'min:1'],
+            'employee_ids' => ['nullable', 'array'],
             'employee_ids.*' => ['integer', 'exists:employees,id'],
             'overrides' => ['nullable', 'array'],
             'overrides.*' => [Rule::enum(DailyShift::class)],

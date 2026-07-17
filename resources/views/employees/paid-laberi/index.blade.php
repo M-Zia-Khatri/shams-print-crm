@@ -15,7 +15,7 @@
     @endif
 
     <x-dashboard-card title="Filters" description="Filter payments by date range">
-        <x-date-range-filter :start-date="$filters['start_date']" :end-date="$filters['end_date']" range="custom" />
+        <x-date-range-filter :start-date="$filters['start_date']" :end-date="$filters['end_date']" :range="$filters['range'] ?? 'custom'" />
     </x-dashboard-card>
 
     <x-dashboard-card title="Payments" description="All recorded payments.">

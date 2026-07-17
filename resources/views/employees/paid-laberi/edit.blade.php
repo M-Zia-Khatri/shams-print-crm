@@ -30,6 +30,9 @@
                             <option value="{{ $type->value }}" @selected(old('payment_type', $payment->payment_type->value) === $type->value)>{{ $type->label() }}</option>
                         @endforeach
                     </select>
+                    <span class="label-text-alt text-base-content/60 mt-1">
+                        Bonus (Award) increases remaining. Salary and Advance reduce remaining. Cash paid for a bonus should be recorded as Salary.
+                    </span>
                 </label>
 
                 <label class="form-control w-full">

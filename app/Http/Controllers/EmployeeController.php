@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\DailyShift;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
+use App\Models\EmployeeDailyLaberiEntry;
 use App\Services\PayrollCalculationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class EmployeeController extends Controller
         $status = (string) $request->query('status', '');
 
         $employees = Employee::query()
+            ->with(['dailyLaberiEntries', 'paidLaberi'])
             ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
             ->when($role !== '', fn ($query) => $query->where('role', $role))
             ->when($status !== '', fn ($query) => $query->where('status', $status))
@@ -30,11 +32,13 @@ class EmployeeController extends Controller
             ->withQueryString();
 
         $lifetimeStart = '1970-01-01';
-        $lifetimeEnd = now()->toDateString();
+        $lifetimeEnd = '2099-12-31';
 
         $employees->getCollection()->transform(function (Employee $employee) use ($lifetimeStart, $lifetimeEnd) {
             $summary = $this->payrollCalculationService->summaryForEmployee($employee, $lifetimeStart, $lifetimeEnd);
             $employee->setAttribute('lifetime_earned', $summary['total_earned']);
+            $employee->setAttribute('lifetime_advance', $summary['total_advance']);
+            $employee->setAttribute('lifetime_bonus', $summary['total_bonus']);
             $employee->setAttribute('lifetime_paid', $summary['total_paid']);
             $employee->setAttribute('lifetime_remaining', $summary['remaining']);
 
@@ -43,18 +47,13 @@ class EmployeeController extends Controller
 
         $today = now()->toDateString();
         $activeEmployees = Employee::active()->get();
+        $activeEmployeeIds = $activeEmployees->pluck('id');
+        $todayEntries = EmployeeDailyLaberiEntry::whereIn('employee_id', $activeEmployeeIds)
+            ->whereDate('laberi_date', $today)
+            ->get();
 
-        $workingToday = $activeEmployees->filter(function (Employee $employee) use ($today) {
-            $entry = $employee->dailyLaberiEntries()->whereDate('laberi_date', $today)->first();
-
-            return $entry !== null && $entry->daily_shift->isWorkingDay();
-        })->count();
-
-        $leaveToday = $activeEmployees->filter(function (Employee $employee) use ($today) {
-            $entry = $employee->dailyLaberiEntries()->whereDate('laberi_date', $today)->first();
-
-            return $entry !== null && $entry->daily_shift === DailyShift::Leave;
-        })->count();
+        $workingToday = $todayEntries->filter(fn ($entry) => $entry->daily_shift->isWorkingDay())->count();
+        $leaveToday = $todayEntries->filter(fn ($entry) => $entry->daily_shift === DailyShift::Leave)->count();
 
         $currentWeek = $this->payrollCalculationService->currentWeekRange();
 
@@ -70,7 +69,7 @@ class EmployeeController extends Controller
                 'working_today' => $workingToday,
                 'leave_today' => $leaveToday,
                 'weekly_payroll_amount' => $this->payrollCalculationService->weeklyPayrollAmount(
-                    $activeEmployees,
+                    $activeEmployees->loadMissing(['dailyLaberiEntries', 'paidLaberi']),
                     $currentWeek['start']->toDateString(),
                     $currentWeek['end']->toDateString(),
                 ),
@@ -91,8 +90,12 @@ class EmployeeController extends Controller
     public function store(EmployeeRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request): void {
-            foreach ($request->validatedEmployees() as $employeeData) {
-                Employee::create($employeeData);
+            if ($request->has('employees')) {
+                foreach ($request->validatedEmployees() as $employeeData) {
+                    Employee::create($employeeData);
+                }
+            } else {
+                Employee::create($request->validated());
             }
         });
 
@@ -101,9 +104,10 @@ class EmployeeController extends Controller
 
     public function show(Request $request, Employee $employee): View
     {
+        $employee->loadMissing(['dailyLaberiEntries', 'paidLaberi']);
         $currentWeek = $this->payrollCalculationService->currentWeekRange();
         $lifetimeStart = '1970-01-01';
-        $lifetimeEnd = now()->toDateString();
+        $lifetimeEnd = '2099-12-31';
 
         $currentWeekSummary = $this->payrollCalculationService->summaryForEmployee(
             $employee,

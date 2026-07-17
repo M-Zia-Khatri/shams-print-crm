@@ -14,8 +14,18 @@ enum PaymentType: string
         return match ($this) {
             self::Salary => 'Salary',
             self::Advance => 'Advance',
-            self::Bonus => 'Bonus',
+            self::Bonus => 'Bonus (Award)',
             self::Deduction => 'Deduction',
+        };
+    }
+
+    public function description(): string
+    {
+        return match ($this) {
+            self::Salary => 'Cash paid toward wages. Reduces remaining.',
+            self::Advance => 'Prepayment given to the employee. Reduces remaining.',
+            self::Bonus => 'Extra amount owed to the employee. Increases remaining. Record cash given for a bonus as Salary.',
+            self::Deduction => 'Fine or clawback. Reduces remaining.',
         };
     }
 }

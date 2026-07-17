@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\DailyShift;
 use App\Models\Employee;
+use App\Models\EmployeeDailyLaberiEntry;
 use App\Models\PayrollLock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,6 +60,24 @@ class EmployeeDailyLaberiController extends Controller
         $employee->dailyLaberiEntries()->create($validated);
 
         return to_route('employees.daily-laberi.index', $employee)->with('status', 'Shift entry recorded.');
+    }
+
+    public function destroy(Employee $employee, EmployeeDailyLaberiEntry $entry): RedirectResponse
+    {
+        $this->ensureEntryBelongsToEmployee($employee, $entry);
+
+        if (PayrollLock::isDateLocked($entry->laberi_date)) {
+            return back()->withErrors(['laberi_date' => 'This shift falls inside a locked payroll week.']);
+        }
+
+        $entry->delete();
+
+        return to_route('employees.daily-laberi.index', $employee)->with('status', 'Shift deleted.');
+    }
+
+    private function ensureEntryBelongsToEmployee(Employee $employee, EmployeeDailyLaberiEntry $entry): void
+    {
+        abort_unless($entry->employee_id === $employee->id, 404);
     }
 
     /**

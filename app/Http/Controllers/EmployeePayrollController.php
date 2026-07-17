@@ -15,9 +15,14 @@ class EmployeePayrollController extends Controller
 
     public function index(Request $request): View
     {
-        [$start, $end] = $this->resolveWeekRange($request);
+        $resolved = $this->payrollCalculationService->resolveRangeFromRequest($request);
+        $start = $resolved['start'];
+        $end = $resolved['end'];
 
-        $employees = Employee::active()->orderBy('name')->get();
+        $employees = Employee::active()
+            ->with(['dailyLaberiEntries', 'paidLaberi'])
+            ->orderBy('name')
+            ->get();
 
         $rows = $employees->map(function (Employee $employee) use ($start, $end) {
             $summary = $this->payrollCalculationService->summaryForEmployee($employee, $start, $end);
@@ -25,12 +30,19 @@ class EmployeePayrollController extends Controller
             return array_merge(['employee' => $employee], $summary);
         });
 
-        $lock = PayrollLock::findForWeek($start, $end);
+        $exactLock = PayrollLock::findForWeek($start, $end);
+        $lock = $exactLock ?? PayrollLock::findOverlapping($start, $end);
 
         return view('employee-payroll.index', [
             'rows' => $rows,
             'lock' => $lock,
-            'filters' => ['start_date' => $start, 'end_date' => $end],
+            'exactLock' => $exactLock,
+            'payrollType' => $resolved['payroll_type'],
+            'filters' => [
+                'start_date' => $start,
+                'end_date' => $end,
+                'range' => $resolved['range'],
+            ],
         ]);
     }
 
@@ -65,29 +77,5 @@ class EmployeePayrollController extends Controller
         PayrollLock::findForWeek($validated['week_start_date'], $validated['week_end_date'])?->delete();
 
         return back()->with('status', 'Payroll week unlocked.');
-    }
-
-    /**
-     * @return array{0: string, 1: string}
-     */
-    private function resolveWeekRange(Request $request): array
-    {
-        $mode = $request->query('range', 'current');
-        $start = $request->query('start_date');
-        $end = $request->query('end_date');
-
-        if ($mode === 'custom' && is_string($start) && $start !== '' && is_string($end) && $end !== '') {
-            return [$start, $end];
-        }
-
-        if ($mode === 'last') {
-            $range = $this->payrollCalculationService->lastWeekRange();
-
-            return [$range['start']->toDateString(), $range['end']->toDateString()];
-        }
-
-        $range = $this->payrollCalculationService->currentWeekRange();
-
-        return [$range['start']->toDateString(), $range['end']->toDateString()];
     }
 }

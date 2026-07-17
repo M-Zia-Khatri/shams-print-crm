@@ -65,6 +65,7 @@ Route::middleware('role:admin,super_admin')->group(function (): void {
     // Per-employee daily laberi
     Route::get('/employees/{employee}/daily-laberi/create', [EmployeeDailyLaberiController::class, 'create'])->whereNumber('employee')->name('employees.daily-laberi.create');
     Route::post('/employees/{employee}/daily-laberi/create', [EmployeeDailyLaberiController::class, 'store'])->whereNumber('employee')->name('employees.daily-laberi.store');
+    Route::delete('/employees/{employee}/daily-laberi/{entry}', [EmployeeDailyLaberiController::class, 'destroy'])->whereNumber('employee')->name('employees.daily-laberi.destroy');
 
     // Per-employee paid laberi
     Route::get('/employees/{employee}/paid-laberi/create', [EmployeePaidLaberiController::class, 'create'])->whereNumber('employee')->name('employees.paid-laberi.create');

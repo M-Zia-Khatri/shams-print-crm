@@ -27,15 +27,19 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <x-dashboard-card title="This Week" description="Financial summary for the current week">
-            <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
                 <div><div class="text-xs text-base-content/60">Earned</div><div class="font-bold">{{ number_format($currentWeekSummary['total_earned'], 2) }}</div></div>
+                <div><div class="text-xs text-base-content/60">Advance</div><div class="font-bold">{{ number_format($currentWeekSummary['total_advance'], 2) }}</div></div>
+                <div><div class="text-xs text-base-content/60">Bonus</div><div class="font-bold">{{ number_format($currentWeekSummary['total_bonus'], 2) }}</div></div>
                 <div><div class="text-xs text-base-content/60">Paid</div><div class="font-bold">{{ number_format($currentWeekSummary['total_paid'], 2) }}</div></div>
                 <div><div class="text-xs text-base-content/60">Remaining</div><div class="font-bold">{{ number_format($currentWeekSummary['remaining'], 2) }}</div></div>
             </div>
         </x-dashboard-card>
         <x-dashboard-card title="Lifetime" description="Financial summary since joining">
-            <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
                 <div><div class="text-xs text-base-content/60">Earned</div><div class="font-bold">{{ number_format($lifetimeSummary['total_earned'], 2) }}</div></div>
+                <div><div class="text-xs text-base-content/60">Advance</div><div class="font-bold">{{ number_format($lifetimeSummary['total_advance'], 2) }}</div></div>
+                <div><div class="text-xs text-base-content/60">Bonus</div><div class="font-bold">{{ number_format($lifetimeSummary['total_bonus'], 2) }}</div></div>
                 <div><div class="text-xs text-base-content/60">Paid</div><div class="font-bold">{{ number_format($lifetimeSummary['total_paid'], 2) }}</div></div>
                 <div><div class="text-xs text-base-content/60">Remaining</div><div class="font-bold">{{ number_format($lifetimeSummary['remaining'], 2) }}</div></div>
             </div>

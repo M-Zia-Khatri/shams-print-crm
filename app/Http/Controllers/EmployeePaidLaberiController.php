@@ -6,6 +6,7 @@ use App\Http\Requests\EmployeePaidLaberiRequest;
 use App\Models\Employee;
 use App\Models\EmployeePaidLaberi;
 use App\Models\PayrollLock;
+use App\Services\PayrollCalculationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +14,13 @@ use Illuminate\View\View;
 
 class EmployeePaidLaberiController extends Controller
 {
+    public function __construct(private PayrollCalculationService $payrollCalculationService) {}
+
     public function index(Request $request, Employee $employee): View
     {
-        [$start, $end] = $this->resolveDateRange($request);
+        $resolved = $this->payrollCalculationService->resolveRangeFromRequest($request);
+        $start = $resolved['start'];
+        $end = $resolved['end'];
 
         $payments = $employee->paidLaberi()
             ->betweenDates($start, $end)
@@ -26,7 +31,11 @@ class EmployeePaidLaberiController extends Controller
         return view('employees.paid-laberi.index', [
             'employee' => $employee,
             'payments' => $payments,
-            'filters' => ['start_date' => $start, 'end_date' => $end],
+            'filters' => [
+                'start_date' => $start,
+                'end_date' => $end,
+                'range' => $resolved['range'],
+            ],
         ]);
     }
 
@@ -37,25 +46,31 @@ class EmployeePaidLaberiController extends Controller
 
     public function store(EmployeePaidLaberiRequest $request, Employee $employee): RedirectResponse
     {
-        $employee->paidLaberi()->create($request->validated());
+        $employee->paidLaberi()->create($request->paymentAttributes());
 
         return to_route('employees.paid-laberi.index', $employee)->with('status', 'Payment recorded.');
     }
 
     public function edit(Employee $employee, EmployeePaidLaberi $payment): View
     {
+        $this->ensurePaymentBelongsToEmployee($employee, $payment);
+
         return view('employees.paid-laberi.edit', compact('employee', 'payment'));
     }
 
     public function update(EmployeePaidLaberiRequest $request, Employee $employee, EmployeePaidLaberi $payment): RedirectResponse
     {
-        $payment->update($request->validated());
+        $this->ensurePaymentBelongsToEmployee($employee, $payment);
+
+        $payment->update($request->paymentAttributes());
 
         return to_route('employees.paid-laberi.index', $employee)->with('status', 'Payment updated.');
     }
 
     public function destroy(Employee $employee, EmployeePaidLaberi $payment): RedirectResponse
     {
+        $this->ensurePaymentBelongsToEmployee($employee, $payment);
+
         if (PayrollLock::isDateLocked($payment->paid_date)) {
             return back()->withErrors(['paid_date' => 'This payment falls inside a locked payroll week.']);
         }
@@ -86,18 +101,8 @@ class EmployeePaidLaberiController extends Controller
         return to_route('employee-payroll.index')->with('status', 'Payments recorded.');
     }
 
-    /**
-     * @return array{0: string, 1: string}
-     */
-    private function resolveDateRange(Request $request): array
+    private function ensurePaymentBelongsToEmployee(Employee $employee, EmployeePaidLaberi $payment): void
     {
-        $start = $request->query('start_date');
-        $end = $request->query('end_date');
-
-        if (is_string($start) && $start !== '' && is_string($end) && $end !== '') {
-            return [$start, $end];
-        }
-
-        return [now()->startOfWeek()->toDateString(), now()->endOfWeek()->toDateString()];
+        abort_unless($payment->employee_id === $employee->id, 404);
     }
 }
