@@ -11,6 +11,8 @@ export default defineConfig({
                 'resources/js/item-entries-create.js',
                 'resources/js/item-entries-index.js',
                 'resources/js/expenses-create.js',
+                'resources/js/employee-shifts-create.js',
+                'resources/js/employee-paid-laberi-bulk.js',
             ],
             refresh: true,
             fonts: [

@@ -78,8 +78,20 @@
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Dashboard</a>
                     <a href="/item-entries" prefetch
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
-                    <a href="#"
-                        class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Employees</a>
+
+                    <div class="dropdown dropdown-hover">
+                        <div tabindex="0" role="button"
+                            class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">
+                            Employees</div>
+                        <ul tabindex="0"
+                            class="menu menu-sm dropdown-content mt-1 z-[1] p-2 shadow-xl bg-base-100 border border-base-300 rounded-xl w-56">
+                            <li><a href="{{ route('employees.index') }}">Employee List</a></li>
+                            <li><a href="{{ route('employees.create') }}">Add Employee</a></li>
+                            <li><a href="{{ route('employees.shifts.create') }}">Add Shift</a></li>
+                            <li><a href="{{ route('employee-payroll.index') }}">Weekly Payroll Summary</a></li>
+                        </ul>
+                    </div>
+
                     <a href="/expenses" prefetch
                         class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Expenses</a>
                     <a href="#"
@@ -147,10 +159,14 @@
                     class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Dashboard</a>
                 <a href="/item-entries" prefetch
                     class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Entry</a>
-                <a href="#"
-                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Employees</a>
-                <a href="#"
-                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Expenses</a>
+                <a href="{{ route('employees.index') }}"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Employees</a>
+                <a href="{{ route('employees.shifts.create') }}"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Add Shift</a>
+                <a href="{{ route('employee-payroll.index') }}"
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Payroll</a>
+                <a href="/expenses" prefetch
+                    class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content">Expenses</a>
                 <a href="#"
                     class="btn btn-ghost btn-sm rounded-lg text-base-content/70 hover:text-base-content btn-disabled">Invoices</a>
             </nav>
