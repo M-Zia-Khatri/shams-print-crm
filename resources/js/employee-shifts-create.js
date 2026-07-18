@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     syncOverridesWithDefault();
 
-    form.addEventListener('submit', function () {
+    function prepareShiftFieldsForSubmit() {
         if (!advancedToggle.checked) {
             // Non-advanced mode: don't submit per-employee overrides, let the
             // server apply the shared default shift to every checked employee.
@@ -48,6 +48,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     overrideSelect.disabled = true;
                 }
             }
+        });
+    }
+
+    form.addEventListener('submit', function () {
+        prepareShiftFieldsForSubmit();
+    });
+
+    import('./offline/form-offline.js').then(({ wireOfflineFormSubmit }) => {
+        wireOfflineFormSubmit({
+            form,
+            module: 'employee-shifts',
+            beforeNativeSubmit: prepareShiftFieldsForSubmit,
         });
     });
 });
