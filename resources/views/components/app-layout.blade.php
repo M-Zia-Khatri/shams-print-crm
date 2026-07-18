@@ -231,6 +231,14 @@
             }
         });
     </script>
+
+    <!-- PWA status & install/update banners (Phase 5) -->
+    <x-pwa-install-banner />
+    <x-pwa-update-banner />
+    <x-offline-indicator />
+    <x-pending-sync-badge />
+    <x-sync-status-widget />
+
 </body>
 
 </html>
