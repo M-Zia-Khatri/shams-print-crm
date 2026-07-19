@@ -1,7 +1,7 @@
 import Dexie from 'dexie';
 
 /**
- * Offline IndexedDB schema for queued form submissions and sync logs.
+ * Offline IndexedDB schema for queued form submissions, sync logs, and read-only mirrors.
  *
  * @typedef {object} OfflineForm
  * @property {number} [id]
@@ -33,6 +33,18 @@ db.version(1).stores({
     offline_forms: '++id, module, created_at',
     pending_requests: '++id, url, method, module, status, created_at, [url+created_at]',
     offline_logs: '++id, pending_request_id, level, created_at',
+});
+
+db.version(2).stores({
+    offline_forms: '++id, module, created_at',
+    pending_requests: '++id, url, method, module, status, created_at, [url+created_at]',
+    offline_logs: '++id, pending_request_id, level, created_at',
+    item_entries: 'id, updated_at',
+    expenses: 'id, updated_at',
+    employee_daily_laberi_entries: 'id, employee_id, laberi_date, updated_at',
+    item_payment_receiveds: 'id, updated_at',
+    dashboard_summary: 'key',
+    sync_meta: 'resource',
 });
 
 export default db;
