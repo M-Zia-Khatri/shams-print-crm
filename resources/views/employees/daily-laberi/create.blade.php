@@ -8,7 +8,7 @@
     @endif
 
     <x-dashboard-card title="{{ $employee->name }}" description="Enter shift details below.">
-        <form method="POST" action="{{ route('employees.daily-laberi.store', $employee) }}" class="w-full space-y-4">
+        <form id="daily-laberi-form" method="POST" action="{{ route('employees.daily-laberi.store', $employee) }}" class="w-full space-y-4">
             @csrf
 
             <label class="form-control w-full">
@@ -31,4 +31,6 @@
             </div>
         </form>
     </x-dashboard-card>
+
+    @vite('resources/js/employee-daily-laberi-create.js')
 </x-app-layout>

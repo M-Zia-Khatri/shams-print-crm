@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0A0B0D">
+    <title>Offline | Shams Print CRM</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+        :root {
+            --bg: #0A0B0D;
+            --surface: #16181c;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --accent: #F4BC11;
+            --border: #27272a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: radial-gradient(ellipse at top, #1a1c22 0%, var(--bg) 55%);
+            color: var(--text);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 26rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(244, 188, 17, 0.15);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0 0 1.5rem;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .meta {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+        }
+
+        .meta-row span:first-child {
+            color: var(--muted);
+        }
+
+        .meta-row span:last-child {
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            border: 0;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: var(--accent);
+            color: #0A0B0D;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="badge">Offline</div>
+        <h1>You are offline</h1>
+        <p>Shams Print CRM cannot reach the server right now. Cached pages may still work. Queued form submissions will sync when you reconnect.</p>
+
+        <div class="meta">
+            <div class="meta-row">
+                <span>Last sync</span>
+                <span id="last-sync-time">—</span>
+            </div>
+            <div class="meta-row">
+                <span>Pending sync</span>
+                <span id="pending-sync-count">0</span>
+            </div>
+        </div>
+
+        <button type="button" id="retry-connection">Retry connection</button>
+    </main>
+    <script>
+        document.getElementById('retry-connection').addEventListener('click', function () {
+            if (navigator.onLine) {
+                window.location.reload();
+                return;
+            }
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
