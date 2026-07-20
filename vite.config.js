@@ -68,6 +68,13 @@ export default defineConfig({
                 'sw-offline-sync.js',
             ],
             workbox: {
+                // Ensures a newly-activated SW claims already-open clients
+                // immediately (no extra full reload needed before it starts
+                // intercepting fetches/navigations). Does not affect the
+                // prompt-based update UX — skipWaiting stays unset, so an
+                // existing controlling SW is never force-replaced without
+                // the user clicking "Reload" in pwa-update-banner.
+                clientsClaim: true,
                 importScripts: ['/sw-offline-sync.js'],
                 navigateFallback: '/offline.html',
                 navigateFallbackDenylist: [

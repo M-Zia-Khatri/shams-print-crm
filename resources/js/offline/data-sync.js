@@ -27,6 +27,16 @@ const resources = {
     },
 };
 
+// Must match the `cacheName` of the "network-first-pages" runtimeCaching
+// entry in vite.config.js. The dashboard route ('/') is only ever populated
+// into this Cache Storage bucket by an intercepted navigation — which does
+// not reliably happen on the same load that first registers the service
+// worker. Explicitly priming it here (independent of whether the SW is
+// currently controlling this page) guarantees offline.html is never shown
+// for a dashboard that has actually completed a sync.
+const DASHBOARD_CACHE_NAME = 'network-first-pages';
+const DASHBOARD_CACHE_URL = '/';
+
 let isFullSyncRunning = false;
 
 function dispatchDataSyncStatus(state, lastSyncAt = null) {
@@ -59,6 +69,36 @@ async function lastDataSyncTime() {
         .sort();
 
     return syncTimes.at(-1) ?? null;
+}
+
+/**
+ * Explicitly write the current dashboard document into the same Cache
+ * Storage bucket Workbox's NetworkFirst route uses for '/'. This makes the
+ * offline dashboard available even if the service worker hadn't yet started
+ * intercepting navigations on this visit (see comment above).
+ */
+async function warmDashboardCache() {
+    if (!('caches' in window)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(DASHBOARD_CACHE_URL, {
+            credentials: 'same-origin',
+            headers: { Accept: 'text/html' },
+        });
+
+        if (!response || !response.ok) {
+            return;
+        }
+
+        const cache = await caches.open(DASHBOARD_CACHE_NAME);
+        await cache.put(DASHBOARD_CACHE_URL, response.clone());
+    } catch (error) {
+        // Non-fatal: offline dashboard will simply fall back to offline.html
+        // until the next successful sync manages to warm the cache.
+        console.warn('Failed to warm offline dashboard cache', error);
+    }
 }
 
 export async function syncDashboardSummary() {
@@ -131,6 +171,7 @@ export async function runFullSync() {
         }
 
         await syncDashboardSummary();
+        await warmDashboardCache();
         dispatchDataSyncStatus('idle', await lastDataSyncTime());
     } catch (error) {
         console.error('Offline read-cache sync failed', error);
