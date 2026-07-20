@@ -47,8 +47,7 @@
     <!-- Dashboard Columns Layout (Split layout on lg screen) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <!-- Left Main Section (Dashboard Cards) -->
-        <div class="lg:col-span-8 space-y-8">
+        <div class="lg:col-span-12 space-y-8">
 
             <div>
                 <x-section-title title="Workspace Modules"
@@ -69,13 +68,12 @@
                     </x-dashboard-card>
 
                     <!-- Employees-->
-                    <x-dashboard-card title="Employees" description="Employees details.">
+                    <x-dashboard-card title="Employees" description="Manage employee records and roles.">
                         <x-slot name="icon">
                             <x-clarity-employee-group-line class='text-primary w-6 h-6' />
                         </x-slot>
-                        <a href="#" prefetch>
-                            <x-action-button type="submit" variant="primary" size="sm">comming
-                                soon</x-action-button>
+                        <a href="/employees" prefetch>
+                            <x-action-button type="submit" variant="primary" size="sm">Manage Employees</x-action-button>
                         </a>
                     </x-dashboard-card>
 

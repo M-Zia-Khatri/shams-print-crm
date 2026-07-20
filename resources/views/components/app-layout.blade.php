@@ -182,7 +182,7 @@
         <footer
             class="footer footer-center p-6 bg-base-100 border-t border-base-300 text-base-content/50 text-xs mt-auto">
             <aside>
-                <p>&copy; {{ date('Y') }} Shams Print CRM. Design engineered with daisyUI and Tailwind CSS.</p>
+                <p>&copy; {{ date('Y') }} Shams Print CRM. Made by Muhammad Zia khatri</p>
             </aside>
         </footer>
 
