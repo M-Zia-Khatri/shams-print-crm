@@ -3,6 +3,7 @@
 <div id="sync-status-widget" class="fixed bottom-28 left-4 z-50 hidden items-center gap-2 bg-base-100 border border-base-300 shadow-sm rounded-full px-3 py-1.5">
     <span id="sync-status-badge" class="badge badge-ghost badge-sm">Idle</span>
     <span id="sync-status-last" class="text-xs text-base-content/60">No syncs yet</span>
+    <span id="sync-status-data" class="text-xs text-base-content/60">No data sync yet</span>
 </div>
 
 <script>
@@ -10,8 +11,9 @@
         var widget = document.getElementById('sync-status-widget');
         var badgeEl = document.getElementById('sync-status-badge');
         var lastEl = document.getElementById('sync-status-last');
+        var dataEl = document.getElementById('sync-status-data');
 
-        if (!widget || !badgeEl || !lastEl) {
+        if (!widget || !badgeEl || !lastEl || !dataEl) {
             return;
         }
 
@@ -49,6 +51,12 @@
                 : (detail.state === 'error' ? 'Sync error' : 'Idle');
 
             lastEl.textContent = formatTime(detail.lastSyncAt);
+
+            if (detail.dataSyncState || detail.dataLastSyncAt) {
+                dataEl.textContent = detail.dataSyncState === 'syncing'
+                    ? 'Data sync running'
+                    : formatTime(detail.dataLastSyncAt).replace('Last sync', 'Data synced');
+            }
         });
     })();
 </script>

@@ -1,5 +1,6 @@
 import { getPending } from './sync-queue.js';
 import db from './db.js';
+import { startDataSync } from './data-sync.js';
 
 const SYNC_POLL_INTERVAL_MS = 4000;
 
@@ -111,4 +112,5 @@ function wireServiceWorkerUpdates() {
 
 wireInstallPrompt();
 wireServiceWorkerUpdates();
+startDataSync();
 startSyncStatusPolling();
