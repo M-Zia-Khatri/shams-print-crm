@@ -293,3 +293,136 @@ make prod-logs
 ```
 
 Verify `.env` or `.env.production` values match the Docker Compose service credentials.
+
+## Offline read-cache local testing guide
+
+Use this checklist to verify the read-only offline data-cache layer in local development. These steps intentionally avoid payroll, paid-laberi, user/role management, and any offline write/delete behavior.
+
+### 1. Prepare the app
+
+```bash
+make install
+make up
+php artisan migrate --seed
+npm run build
+```
+
+Then start the application in one terminal:
+
+```bash
+php artisan serve
+```
+
+Open the app in a browser at the URL printed by Artisan, log in as a seeded user that has one of these roles: `viewer`, `admin`, or `super_admin`, and keep DevTools open on the Application tab.
+
+### 2. Verify the sync API while online
+
+Run these requests from a logged-in browser session, or use DevTools Network while navigating the app:
+
+```text
+GET /api/sync/item-entries
+GET /api/sync/expenses
+GET /api/sync/employee-daily-laberi
+GET /api/sync/item-payment-receiveds
+GET /api/sync/dashboard-summary
+```
+
+For the four resource endpoints, confirm the response shape is exactly:
+
+```json
+{
+  "created": [],
+  "updated": [],
+  "deleted": [],
+  "server_time": "2026-07-19T13:00:00Z"
+}
+```
+
+For an incremental check, copy a previous `server_time` and call an endpoint with `since`:
+
+```text
+GET /api/sync/expenses?since=<copied-server-time>
+```
+
+Expected behavior:
+
+- Records created after `since` appear in `created`.
+- Older records updated after `since` appear in `updated`.
+- Soft-deleted expenses and employee daily laberi entries deleted after `since` appear as IDs in `deleted`.
+- Item entries and item payment receiveds always return `deleted: []` because those tables currently hard-delete records and do not have `deleted_at` columns.
+
+### 3. Verify IndexedDB read mirrors
+
+While online, reload the dashboard once. The app should run the read-cache sync on load.
+
+In DevTools, open **Application → IndexedDB → shams_offline** and confirm these stores exist:
+
+```text
+item_entries
+expenses
+employee_daily_laberi_entries
+item_payment_receiveds
+dashboard_summary
+sync_meta
+```
+
+Confirm that:
+
+- `dashboard_summary` has a single row with `key: "current"`.
+- `sync_meta` has one row per synced resource with a `last_sync` timestamp.
+- Existing write-queue stores are still present: `offline_forms`, `pending_requests`, and `offline_logs`.
+
+### 4. Verify offline dashboard summary
+
+After a successful online sync:
+
+1. Open the dashboard.
+2. In DevTools Network, switch throttling to **Offline**.
+3. Refresh the page if it is already service-worker cached, or navigate back to `/` from another cached page.
+4. Confirm the **Offline Dashboard Summary** section appears.
+5. Confirm it shows cached cards and a `Last Synced:` timestamp.
+
+If no sync has completed yet, the dashboard should show the empty state asking you to connect once to sync the read-only dashboard summary.
+
+### 5. Verify background sync trigger reuse
+
+The data sync engine listens for the existing service-worker message:
+
+```json
+{ "type": "SHAMS_OFFLINE_SYNC" }
+```
+
+To test manually from the browser console after logging in, run:
+
+```js
+window.dispatchEvent(new Event('online'))
+```
+
+Then check IndexedDB `sync_meta` again. The `last_sync` values should update when the browser is online and the session is still authenticated.
+
+### 6. Verify local search helpers
+
+After IndexedDB contains synced rows, run these commands in the browser console:
+
+```js
+await window.ShamsOfflineDataCache.searchItemEntries('party')
+await window.ShamsOfflineDataCache.searchExpenses('ink')
+await window.ShamsOfflineDataCache.searchEmployeeDailyLaberi('full')
+await window.ShamsOfflineDataCache.searchItemPaymentReceiveds('payment')
+```
+
+Expected behavior:
+
+- Results come from IndexedDB only.
+- Searches are case-insensitive substring matches.
+- No network request should be made by these search helper calls.
+
+### 7. Run automated checks
+
+```bash
+php artisan test --compact tests/Feature/SyncApiTest.php
+vendor/bin/pint --dirty --format agent
+npm run build
+```
+
+If `npm run build` fails while fetching remote fonts, retry with network access to `fonts.bunny.net` available. The PWA build needs the frontend bundle to test the service worker and IndexedDB behavior reliably.

@@ -12,6 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#0A0B0D">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('icons/icon-192.png') }}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('icons/icon-512.png') }}">
 
     <style>
         body {
@@ -226,6 +231,14 @@
             }
         });
     </script>
+
+    <!-- PWA status & install/update banners (Phase 5) -->
+    <x-pwa-install-banner />
+    <x-pwa-update-banner />
+    <x-offline-indicator />
+    <x-pending-sync-badge />
+    <x-sync-status-widget />
+
 </body>
 
 </html>
