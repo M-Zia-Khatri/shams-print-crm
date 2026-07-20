@@ -50,41 +50,6 @@
         <!-- Left Main Section (Dashboard Cards) -->
         <div class="lg:col-span-8 space-y-8">
 
-
-            <div id="offline-dashboard-summary" class="hidden" data-offline-dashboard-summary>
-                <x-section-title title="Offline Dashboard Summary"
-                    subtitle="Read-only snapshot from the last completed data sync." />
-
-                <div id="offline-dashboard-last-synced" class="mb-4 text-sm font-semibold text-base-content/70"></div>
-
-                <div id="offline-dashboard-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <x-dashboard-card title="Total Employees" description="Cached employee count.">
-                        <div class="text-2xl font-bold text-primary" data-summary-field="total_employees">—</div>
-                    </x-dashboard-card>
-
-                    <x-dashboard-card title="Working Today" description="Cached working shift count.">
-                        <div class="text-2xl font-bold text-success" data-summary-field="working_today">—</div>
-                    </x-dashboard-card>
-
-                    <x-dashboard-card title="Leave / Off Today" description="Cached leave and off count.">
-                        <div class="text-2xl font-bold text-warning" data-summary-field="leave_today">—</div>
-                    </x-dashboard-card>
-
-                    <x-dashboard-card title="Pending Item Payments" description="Server-computed cached balance.">
-                        <div class="text-2xl font-bold text-primary" data-summary-field="pending_item_payments">—</div>
-                    </x-dashboard-card>
-
-                    <x-dashboard-card title="Expense Total" description="Server-computed cached expenses.">
-                        <div class="text-2xl font-bold text-primary" data-summary-field="expense_total">—</div>
-                    </x-dashboard-card>
-                </div>
-
-                <div id="offline-dashboard-empty" class="hidden">
-                    <x-empty-state title="No offline dashboard cache yet"
-                        message="Connect to the internet once to sync the read-only dashboard summary." />
-                </div>
-            </div>
-
             <div>
                 <x-section-title title="Workspace Modules"
                     subtitle="Directory access for primary CRM business operations." />
@@ -156,64 +121,4 @@
 
     </div>
 
-
-    <script>
-        const section = document.querySelector('[data-offline-dashboard-summary]');
-        const cards = document.getElementById('offline-dashboard-cards');
-        const empty = document.getElementById('offline-dashboard-empty');
-        const lastSynced = document.getElementById('offline-dashboard-last-synced');
-
-        function formatNumber(value) {
-            const number = Number(value ?? 0);
-
-            return Number.isInteger(number) ? String(number) : number.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
-        }
-
-        async function renderOfflineDashboardSummary() {
-            if (!section) {
-                return;
-            }
-
-            section.classList.toggle('hidden', navigator.onLine);
-
-            if (navigator.onLine) {
-                return;
-            }
-
-            const db = window.ShamsOfflineDataCache?.db;
-
-            if (!db) {
-                return;
-            }
-
-            const summary = await db.dashboard_summary.get('current');
-            const meta = await db.sync_meta.get('dashboard_summary');
-
-            if (!summary) {
-                cards.classList.add('hidden');
-                empty.classList.remove('hidden');
-                lastSynced.textContent = '';
-                return;
-            }
-
-            empty.classList.add('hidden');
-            cards.classList.remove('hidden');
-
-            section.querySelectorAll('[data-summary-field]').forEach((element) => {
-                element.textContent = formatNumber(summary[element.dataset.summaryField]);
-            });
-
-            lastSynced.textContent = meta?.last_sync
-                ? `Last Synced: ${new Date(meta.last_sync).toLocaleString()}`
-                : 'Last Synced: unknown';
-        }
-
-        window.addEventListener('online', renderOfflineDashboardSummary);
-        window.addEventListener('offline', renderOfflineDashboardSummary);
-        window.addEventListener('pwa-sync-status', renderOfflineDashboardSummary);
-        renderOfflineDashboardSummary();
-    </script>
 </x-app-layout>

@@ -233,12 +233,5 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.removeItem(DRAFT_KEY);
     });
 
-    import('./offline/form-offline.js').then(({ wireOfflineFormSubmit }) => {
-        wireOfflineFormSubmit({
-            form,
-            module: 'item-entries',
-        });
-    });
-
     restoreDraft();
 });

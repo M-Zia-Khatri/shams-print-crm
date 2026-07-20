@@ -104,13 +104,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updateRemoveButtons();
     calculateSubtotals();
-
-    if (form) {
-        import('./offline/form-offline.js').then(({ wireOfflineFormSubmit }) => {
-            wireOfflineFormSubmit({
-                form,
-                module: 'expenses',
-            });
-        });
-    }
 });

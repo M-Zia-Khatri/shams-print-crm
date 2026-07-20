@@ -95,101 +95,41 @@ window.deletePayment = async (id) => {
 
 window.submitPaymentForm = async (e) => {
     e.preventDefault();
-
+    
     const form = e.target;
     let formData = new FormData(form);
     const id = formData.get('payment_id');
     const url = id ? `/item-payment-receiveds/${id}` : '/item-payment-receiveds';
-
+    
     if (id) {
         formData.append('_method', 'PUT');
     }
 
-    const csrfToken =
-        window.csrfToken ||
-        document.querySelector('meta[name="csrf-token"]')?.content ||
-        document.querySelector('input[name="_token"]')?.value ||
-        '';
-
-    const headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        Accept: 'application/json',
-        'X-CSRF-TOKEN': csrfToken,
-    };
-
-    const bgBtn = document.getElementById('savePaymentBtn');
-
-    const queueOfflinePayment = async () => {
-        const { enqueue } = await import('./offline/sync-queue.js');
-        const {
-            serializeFormData,
-            showQueuedToast,
-            registerSyncListeners,
-            requestBackgroundSync,
-        } = await import('./offline/form-offline.js');
-
-        registerSyncListeners();
-
-        await enqueue({
-            url,
-            method: 'POST',
-            module: 'item-payment-received',
-            payload: await serializeFormData(formData),
-            headers,
-        });
-
-        await requestBackgroundSync();
-        showQueuedToast('Payment queued offline — will sync when you are back online.');
-
-        document.getElementById('receivedPaymentModal')?.close();
-        if (bgBtn) {
-            bgBtn.disabled = false;
-        }
-    };
-
-    if (!navigator.onLine) {
-        try {
-            await queueOfflinePayment();
-        } catch (error) {
-            alert('Error: ' + error.message);
-            if (bgBtn) {
-                bgBtn.disabled = false;
-            }
-        }
-        return;
-    }
-
     try {
-        if (bgBtn) {
-            bgBtn.disabled = true;
-        }
+        const bgBtn = document.getElementById('savePaymentBtn');
+        if (bgBtn) bgBtn.disabled = true;
 
         const response = await fetch(url, {
             method: 'POST',
             body: formData,
-            headers,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': window.csrfToken || document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value
+            }
         });
-
+        
         if (response.ok) {
             document.getElementById('receivedPaymentModal').close();
             window.location.reload();
-            return;
-        }
-
-        const data = await response.json();
-        alert('Error: ' + (data.message || 'Validation failed'));
-        if (bgBtn) {
-            bgBtn.disabled = false;
+        } else {
+            const data = await response.json();
+            alert('Error: ' + (data.message || 'Validation failed'));
+            if (bgBtn) bgBtn.disabled = false;
         }
     } catch (error) {
-        // Network failure while appearing online — queue for later sync.
-        try {
-            await queueOfflinePayment();
-        } catch (queueError) {
-            alert('Error: ' + (queueError.message || error.message));
-            if (bgBtn) {
-                bgBtn.disabled = false;
-            }
-        }
+        alert('Error: ' + error.message);
+        const bgBtn = document.getElementById('savePaymentBtn');
+        if (bgBtn) bgBtn.disabled = false;
     }
 };

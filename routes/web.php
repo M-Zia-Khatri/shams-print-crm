@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\SyncController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeDailyLaberiController;
@@ -22,12 +21,6 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware('role:viewer,admin,super_admin')->group(function (): void {
-    Route::get('/api/sync/item-entries', [SyncController::class, 'itemEntries'])->name('api.sync.item-entries');
-    Route::get('/api/sync/expenses', [SyncController::class, 'expenses'])->name('api.sync.expenses');
-    Route::get('/api/sync/employee-daily-laberi', [SyncController::class, 'employeeDailyLaberi'])->name('api.sync.employee-daily-laberi');
-    Route::get('/api/sync/item-payment-receiveds', [SyncController::class, 'itemPaymentReceiveds'])->name('api.sync.item-payment-receiveds');
-    Route::get('/api/sync/dashboard-summary', [SyncController::class, 'dashboardSummary'])->name('api.sync.dashboard-summary');
-
     Route::get('/item-entries', [ItemEntryController::class, 'index'])->name('item-entries.index');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
