@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Copy dependency manifests first to leverage Docker layer caching.
 # Subsequent source changes won't re-run npm install unless these files change.
+COPY docker/production/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 COPY package.json package-lock.json ./
 
 # Install ALL dev dependencies (Vite, Tailwind, etc.) needed for the build.
