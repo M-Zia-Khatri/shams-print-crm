@@ -18,6 +18,7 @@
         "codeat3/blade-game-icons": "^1.6",
         "codeat3/blade-jam-icons": "^1.8",
         "daljo25/blade-pixelicon-icons": "^1.0",
+        "hasnayeen/blade-eva-icons": "^2.2",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0"
     },

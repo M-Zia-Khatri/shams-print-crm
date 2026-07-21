@@ -18,7 +18,9 @@
             font-family: 'Outfit', sans-serif;
         }
     </style>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <script>
         // Inline Theme script to prevent flash
         (function() {
