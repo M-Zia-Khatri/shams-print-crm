@@ -64,7 +64,7 @@
                     </svg>
                     <div>
                         <h2 class="text-md font-bold tracking-tight text-base-content leading-none">Shams Print CRM</h2>
-                        <p class="text-[9px] text-base-content/50 uppercase tracking-widest font-semibold mt-0.5">
+                        <p class="text-[0.5625rem] text-base-content/50 uppercase tracking-widest font-semibold mt-0.5">
                             Control
                             Center</p>
                     </div>

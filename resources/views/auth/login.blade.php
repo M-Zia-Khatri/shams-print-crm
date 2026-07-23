@@ -85,7 +85,7 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-bold tracking-wider uppercase text-neutral-content">Shams Print</h2>
-                    <p class="text-[10px] text-neutral-content/50 tracking-widest font-semibold uppercase">Management
+                    <p class="text-[0.625rem] text-neutral-content/50 tracking-widest font-semibold uppercase">Management
                         Suite</p>
                 </div>
             </div>
