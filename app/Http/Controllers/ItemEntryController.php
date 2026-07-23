@@ -123,7 +123,15 @@ class ItemEntryController extends Controller
 
         try {
             foreach ($request->validatedEntries() as $index => $entry) {
-                $upload = $this->imageUploadService->upload($request->file("entries.{$index}.image"));
+                $fileKey = "entries.{$index}.image";
+
+                if (! $request->hasFile($fileKey)) {
+                    throw \App\Exceptions\ImageUploadException::uploadFailed(
+                        new \RuntimeException("Image is required for entry #".($index + 1).".")
+                    );
+                }
+
+                $upload = $this->imageUploadService->upload($request->file($fileKey));
                 $uploadedPublicIds[] = $upload['public_id'];
 
                 $preparedEntries[] = $this->payloadWithComputedAmount($entry, $upload['url']);
@@ -133,14 +141,11 @@ class ItemEntryController extends Controller
         } catch (Throwable $exception) {
             $this->rollbackUploadedImages($uploadedPublicIds);
 
-            // TEMPORARY DIAGNOSTIC LOGGING — remove once the underlying
-            // upload/persist failure is identified and fixed.
             Log::error('ItemEntry store failed', [
                 'message' => $exception->getMessage(),
                 'exception_class' => get_class($exception),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
-                'trace' => $exception->getTraceAsString(),
             ]);
 
             return back()
@@ -206,7 +211,7 @@ class ItemEntryController extends Controller
      * @param  array<string, mixed>  $entry
      * @return array<string, mixed>
      */
-    private function payloadWithComputedAmount(array $entry, string $imageUrl): array
+    private function payloadWithComputedAmount(array $entry, ?string $imageUrl): array
     {
         $darjan = (int) $entry['darjan'];
         $totalRate = (float) $entry['total_rate'];
