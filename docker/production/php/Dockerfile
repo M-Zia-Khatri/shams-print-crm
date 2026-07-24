@@ -7,7 +7,6 @@ WORKDIR /app
 
 # Copy dependency manifests first to leverage Docker layer caching.
 # Subsequent source changes won't re-run npm install unless these files change.
-COPY docker/production/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 COPY package.json package-lock.json ./
 
 # Install ALL dev dependencies (Vite, Tailwind, etc.) needed for the build.
@@ -87,6 +86,12 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
     && chown -R www-data:www-data storage bootstrap/cache
 
 RUN php artisan storage:link
+
+# ---------------------------------------------------------------------------
+# PHP upload limits (build-time ini — not an env var)
+# ---------------------------------------------------------------------------
+RUN printf 'upload_max_filesize=20M\npost_max_size=20M\nmemory_limit=512M\nmax_execution_time=300\nmax_input_time=300\n' \
+    > /usr/local/etc/php/conf.d/uploads.ini
 
 # ---------------------------------------------------------------------------
 # Pristine public/ snapshot for seeding the shared named volume.
